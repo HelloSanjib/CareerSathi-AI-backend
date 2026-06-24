@@ -66,6 +66,7 @@ export const debugAuth = async (req, res) => {
         };
         return res.status(200).json({
             status: "ok",
+            version: "ipv4-dns-fix",
             database: dbStatusMap[dbStatus] || "unknown",
             last_db_error: lastDbError,
             env: {
