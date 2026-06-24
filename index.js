@@ -1,5 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
+import dns from "dns"
+dns.setDefaultResultOrder("ipv4first")
 import connectDb from "./config/connectDb.js"
 import cookieParser from "cookie-parser"
 dotenv.config()
