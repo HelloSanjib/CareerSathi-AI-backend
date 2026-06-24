@@ -2,6 +2,7 @@ import genToken from "../config/token.js"
 import User from "../models/user.model.js"
 import axios from "axios"
 import mongoose from "mongoose"
+import { lastDbError } from "../config/connectDb.js"
 
 
 export const googleAuth = async (req, res) => {
@@ -30,10 +31,9 @@ export const googleAuth = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        const userObj = typeof user.toObject === 'function' ? user.toObject() : { ...user };
-        userObj.token = token;
+        user._doc.token = token;
 
-        return res.status(200).json(userObj)
+        return res.status(200).json(user)
 
     } catch (error) {
         return res.status(500).json({ message: `Google auth error ${error}` })
@@ -67,6 +67,7 @@ export const debugAuth = async (req, res) => {
         return res.status(200).json({
             status: "ok",
             database: dbStatusMap[dbStatus] || "unknown",
+            last_db_error: lastDbError,
             env: {
                 has_jwt_secret: !!process.env.JWT_SECRET,
                 has_mongodb_url: !!process.env.MONGODB_URL,
