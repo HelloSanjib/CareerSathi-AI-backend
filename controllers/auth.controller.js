@@ -1,6 +1,7 @@
 import genToken from "../config/token.js"
 import User from "../models/user.model.js"
 import axios from "axios"
+import mongoose from "mongoose"
 
 
 export const googleAuth = async (req, res) => {
@@ -52,4 +53,27 @@ export const logOut = async (req, res) => {
         return res.status(500).json({ message: `Logout error ${error}` })
     }
 
+}
+
+export const debugAuth = async (req, res) => {
+    try {
+        const dbStatus = mongoose.connection.readyState;
+        const dbStatusMap = {
+            0: "disconnected",
+            1: "connected",
+            2: "connecting",
+            3: "disconnecting"
+        };
+        return res.status(200).json({
+            status: "ok",
+            database: dbStatusMap[dbStatus] || "unknown",
+            env: {
+                has_jwt_secret: !!process.env.JWT_SECRET,
+                has_mongodb_url: !!process.env.MONGODB_URL,
+                port: process.env.PORT
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({ message: `Debug error ${error.message}` });
+    }
 }
